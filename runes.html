@@ -1,0 +1,84 @@
+<!--
+Copyright (C) 2015 remotelongitude@gmail.com
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+-->
+<html>
+<body onload="decode();">
+<p style="font-style: italic;">
+Input space-separated numbers (0-28 for runes, whatever for key). If you want spaces on the output for readability, use _ as rune.
+<br/>
+The offset may be positive or negative, and skip (n) is for outputting the n'th rune without decoding (and, thus, without consuming an element from the key). 
+<br/>
+The hard-coded example is from page 58, and the 'formula' is: (rune - ((key % 29) + offset)) % 29.
+</p>
+<table>
+<tr><th>Runes:</th><th>Key:</th></tr>
+<tr>
+<td><textarea style cols="80" rows="10" id="runes">
+25 11 _ 22 15 4 _ 19 26 20 3 8 _ 3 25 _ 5 2 6 7 _ 7 20 25 _ 14 3 24 13 _ 19 23 23 1 6 7 _ 20 _ 23 9 26 11 _ 5 0 27 _ 25 16 13 12 24 2 _ 5 25 _ 5 23 _ 0 9 _ 27 18 _ 0 9 5 21 _ 4 0 _ 25 10 4 23 18 _ 15 26 11 28 1 21 7 _ 14 3 _ 19 28 7 0 _ 4 6 27 _ 21 4 17 _ 25 9 1 15
+</textarea></td>
+<td><textarea cols="80" rows="10" id="key">
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 257 263 269 271 277 281 283 293 307 311 313 317 331 337 347 349 353 359 367 373 379 383 389 397 401 409 419 421 431 433 439 443 449 457 461 463 467 479 487 491 499 503 509 521 523 541 547 557 563 569 571 577 587 593 599 601 607 613 617 619 631 641 643 647 653 659 661 673 677 683 691 701 709 719 727 733 739 743 751 757 761 769 773 787 797 809 811 821 823 827 829 839 853 857 859 863 877 881 883 887 907 911 919 929 937 941 947 953 967 
+</textarea></td>
+</tr>
+</table>
+<p>
+<b>Offset:</b> <input type="text" id="offset" value="-1"/>
+<b>Skip:</b> <input type="text" id="skip" value="73"/>
+</p>
+<p>
+<button onclick="decode()">Decode</button>
+</p>
+<p style="font-weight: bold;">Output:</p>
+<p><div id="output1">...</div></p>
+<p><div id="output2">...</div></p>
+<style>
+div#output1 {
+	font-size: xx-large; 
+	background-color: lightyellow; 
+	width: 100%;
+	border: 1px solid;
+}
+div#output2 {
+	font-size: xx-large; 
+	background-color: lightgray; 
+	width: 100%;
+	border: 1px solid;
+}
+</style>
+<script>
+var gematria = "FvdORkGWHNIJePXSTBEMLgoDAaYiu "
+function mod(n, m) {
+	return ((n % m) + m) % m;
+}
+function decode() {
+    var runes = document.getElementById("runes").value.split(" ")
+	var key = document.getElementById("key").value.split(" ")
+	var offset = parseInt(document.getElementById("offset").value)
+	var skip = parseInt(document.getElementById("skip").value)
+	var output1 = document.getElementById("output1")
+	var output2 = document.getElementById("output2")
+	output1.innerHTML = ""
+	output2.innerHTML = ""
+	
+	var ri, ki, decoded_rune;
+	for (ri = 0, ki = 0; ri < runes.length; ++ri) {
+		if (runes[ri] == "_")
+			decoded_rune = 29
+		else if (ri == skip)
+			decoded_rune = runes[ri]
+		else {			
+			decoded_rune = mod(parseInt(runes[ri]) - (mod(parseInt(key[ki]), 29) + offset), 29)
+			++ki
+		}
+		output1.innerHTML += gematria[decoded_rune]
+		output2.innerHTML += decoded_rune + " "
+	}
+}
+</script>
+</body>
+</html>
+
