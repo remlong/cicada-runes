@@ -7,10 +7,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 -->
 <html>
 <body onload="main();">
+<p><b>
+Note: you can request features / report bugs <a href="https://github.com/remlong/cicada-runes/issues">here</a>, 
+or talk to me (RemoteLongitude) on #cicadasolvers @ <a href="http://webchat.freenode.net/">freenode</a>.
+</b></p>
 <p><i>
 Input space-separated numbers (0-28 for runes, whatever for key). If you want spaces on the output for readability, use _ as rune.
-<br/>
-The hard-coded example is from page 58, and the 'formula' is: (rune - ((key % 29) + offset)) % 29.
 </i></p>
 <table>
 <tr><th>Runes: (load page <select id="page_sel" onchange="loadPage();"></select>)</th><th>Key:</th></tr>
@@ -31,7 +33,7 @@ The offset may be positive or negative, and skip (n) is for outputting the n'th 
 <p>
 <button onclick="decode()">Decode</button>
 </p>
-<p><b>Output:</b> <i>(text and rune id's - in case, for example, you want to use it as key to another page)</i></p>
+<p><b>Output:</b> <i>(text and rune numbers - in case, for example, you want to use it as key to another page)</i></p>
 <p><div id="output1">...</div></p>
 <p><div id="output2">...</div></p>
 <style>
