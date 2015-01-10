@@ -66,7 +66,7 @@ function decode() {
 	output2.innerHTML = ""
 	
 	var ri, ki, decoded_rune;
-	for (ri = 0, ki = 0; ri < runes.length; ++ri) {
+	for (ri = 0, ki = 0; (ri < runes.length) && (ki < key.length); ++ri) {
 		if (runes[ri] == "_")
 			decoded_rune = 29
 		else if (ri == skip)
