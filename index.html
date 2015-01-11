@@ -15,11 +15,12 @@ or talk to me (RemoteLongitude) on #cicadasolvers @ <a href="http://webchat.free
 Input space-separated numbers (0-28 for runes, whatever for key). If you want spaces on the output for readability, use _ as rune.
 </i></p>
 <table>
-<tr><th>Runes: (load page <select id="page_sel" onchange="loadPage();"></select>)</th><th>Key:</th></tr>
+<tr>
+<th>Runes: (load page <select id="page_sel" onchange="loadPage();"></select>)</th>
+<th>Key: (load the <input type="text" size=3 value="100" id="primes" onchange="loadPrimes();"/> first primes)</th></tr>
 <tr>
 <td><textarea style cols="50" rows="10" id="runes"></textarea></td>
 <td><textarea cols="50" rows="10" id="key">
-2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227 229 233 239 241 251 257 263 269 271 277 281 283 293 307 311 313 317 331 337 347 349 353 359 367 373 379 383 389 397 401 409 419 421 431 433 439 443 449 457 461 463 467 479 487 491 499 503 509 521 523 541 547 557 563 569 571 577 587 593 599 601 607 613 617 619 631 641 643 647 653 659 661 673 677 683 691 701 709 719 727 733 739 743 751 757 761 769 773 787 797 809 811 821 823 827 829 839 853 857 859 863 877 881 883 887 907 911 919 929 937 941 947 953 967 
 </textarea></td>
 </tr>
 </table>
@@ -51,7 +52,9 @@ div#output2 {
 }
 </style>
 <script>
-var gematria = ["F","V","TH","O","R","K","G","W","H","N","I","J","EO","P","X","S","T","B","E","M","L","NG","OE","D","A","AE","Y","IA","EA"," "]
+var gematria_text = ["F","V","TH","O","R","K","G","W","H","N","I","J","EO","P","X","S","T","B","E","M","L","NG","OE","D","A","AE","Y","IA","EA"," "]
+var gematria_prime = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109," "]
+var runes_full, primes_full;
 
 function mod(n, m) {
 	return ((n % m) + m) % m;
@@ -75,10 +78,10 @@ function decode() {
 			decoded_rune = runes[ri]
 		else {			
 			decoded_rune = mod(parseInt(runes[ri]) - (mod(parseInt(key[ki]), 29) + offset), 29)
-			++ki
+			++ki			
+			output2.innerHTML += decoded_rune + " "
 		}
-		output1.innerHTML += gematria[decoded_rune]
-		output2.innerHTML += decoded_rune + " "
+		output1.innerHTML += gematria_text[decoded_rune]				
 	}
 }
 
@@ -104,7 +107,15 @@ function loadPage() {
 	runes.value = runes_full[page]	
 }
 
-var runes_full
+function loadPrimes() {
+	var prime_num = parseInt(document.getElementById("primes").value);
+	var key = document.getElementById("key");
+	key.value = "";
+	for (var i = 0; i < prime_num - 1 && i < primes_full.length - 1; ++i) {
+		key.value += primes_full[i] + " ";
+	}
+	key.value += primes_full[i];
+}
 
 function main() {
 	runes_full = loadFile("runes.txt");
@@ -120,10 +131,14 @@ function main() {
 			page_sel.add(option)
 		}
 		page_sel.onchange()
-	}	
-	decode()
+	}
+	primes_full = loadFile("primes.txt");
+	if (primes_full) {
+		primes_full = primes_full.split(" ");
+		loadPrimes();
+	}
+	decode();
 }	
 </script>
 </body>
 </html>
-
