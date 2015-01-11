@@ -25,30 +25,23 @@ Input space-separated numbers (0-28 for runes, whatever for key). If you want sp
 </tr>
 </table>
 <p><i>
-The offset may be positive or negative, and skip (n) is for outputting the n'th rune without decoding (and, thus, without consuming an element from the key). 
+Skip (n) is for outputting the n'th rune without decoding (and, thus, without consuming an element from the key). 
 </i></p>
 <p>
-<b>Offset:</b> <input type="text" id="offset" value="-1" size=5/>
 <b>Skip:</b> <input type="text" id="skip" value="73"/>
 </p>
 <p>
-<button onclick="decode()">Decode</button>
+<button onclick="decode();">Decode</button>
 </p>
 <p><b>Output:</b> <i>(text and rune numbers - in case, for example, you want to use it as key to another page)</i></p>
-<p><div id="output1">...</div></p>
-<p><div id="output2">...</div></p>
+<div id="output"/>
 <style>
-div#output1 {
+div.output_offset {
 	font-size: xx-large; 
 	background-color: lightyellow; 
 	width: 100%;
 	border: 1px solid;
-}
-div#output2 {
-	font-size: xx-large; 
-	background-color: lightgray; 
-	width: 100%;
-	border: 1px solid;
+	border-spacing: 10px;
 }
 </style>
 <script>
@@ -63,25 +56,27 @@ function mod(n, m) {
 function decode() {
     var runes = document.getElementById("runes").value.split(" ")
 	var key = document.getElementById("key").value.split(" ")
-	var offset = parseInt(document.getElementById("offset").value)
 	var skip = parseInt(document.getElementById("skip").value)
-	var output1 = document.getElementById("output1")
-	var output2 = document.getElementById("output2")
-	output1.innerHTML = ""
-	output2.innerHTML = ""
-	
-	var ri, ki, decoded_rune;
-	for (ri = 0, ki = 0; (ri < runes.length) && (ki < key.length); ++ri) {
-		if (runes[ri] == "_")
-			decoded_rune = 29
-		else if (ri == skip)
-			decoded_rune = runes[ri]
-		else {			
-			decoded_rune = mod(parseInt(runes[ri]) - (mod(parseInt(key[ki]), 29) + offset), 29)
-			++ki			
-			output2.innerHTML += decoded_rune + " "
+	var output = document.getElementById("output");
+
+	for (var offset = 0; offset < 29; ++offset) {	
+		var ri, ki, decoded_rune;
+		var output_offset = document.createElement("div");
+		output_offset.setAttribute("class", "output_offset");
+		for (ri = 0, ki = 0; (ri < runes.length) && (ki < key.length); ++ri) {
+			if (runes[ri] == "_")
+				decoded_rune = 29;
+			else if (ri == skip)
+				decoded_rune = runes[ri];
+			else {			
+				decoded_rune = mod(parseInt(runes[ri]) - (mod(parseInt(key[ki]), 29) + offset), 29);
+				++ki;
+			}
+			output_offset.innerHTML += gematria_text[decoded_rune];
 		}
-		output1.innerHTML += gematria_text[decoded_rune]				
+		var par = document.createElement("p");
+		par.appendChild(output_offset);
+		output.appendChild(par);
 	}
 }
 
