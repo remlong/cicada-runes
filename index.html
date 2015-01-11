@@ -31,7 +31,15 @@ Skip (n) is for outputting the n'th rune without decoding (and, thus, without co
 <b>Skip:</b> <input type="text" id="skip" value="73"/>
 </p>
 <p>
+<i>Standard is the "(rune +/- (key % 29) + offset) % 29" formula.</i>
+</p>
+<p>
 <button onclick="decode();">Decode</button>
+<input type="radio" name="scheme" value="std" checked>Standard</input>
+	<select id="std_sign">
+		<option value="pos">pos</option>
+		<option value="neg" selected>neg</option>
+	</select>
 </p>
 <p><b>Output:</b> <i>(text and rune numbers - in case, for example, you want to use it as key to another page)</i></p>
 <div id="output"/>
@@ -54,10 +62,17 @@ function mod(n, m) {
 }
 
 function decode() {
-    var runes = document.getElementById("runes").value.split(" ")
-	var key = document.getElementById("key").value.split(" ")
-	var skip = parseInt(document.getElementById("skip").value)
+    var runes = document.getElementById("runes").value.split(" ");
+	var key = document.getElementById("key").value.split(" ");
+	var skip = parseInt(document.getElementById("skip").value);
+	var std_sign = document.getElementById("std_sign").value;
+	std_sign = (std_sign == "pos" ? 1 : -1);
 	var output = document.getElementById("output");
+	
+	// clean output (not style)
+	while (output.lastChild.tagName == "P") {
+		output.removeChild(output.lastChild);
+	}
 
 	for (var offset = 0; offset < 29; ++offset) {	
 		var ri, ki, decoded_rune;
@@ -69,7 +84,7 @@ function decode() {
 			else if (ri == skip)
 				decoded_rune = runes[ri];
 			else {			
-				decoded_rune = mod(parseInt(runes[ri]) - (mod(parseInt(key[ki]), 29) + offset), 29);
+				decoded_rune = mod(parseInt(runes[ri]) + std_sign * (mod(parseInt(key[ki]), 29) + offset), 29);
 				++ki;
 			}
 			output_offset.innerHTML += gematria_text[decoded_rune];
